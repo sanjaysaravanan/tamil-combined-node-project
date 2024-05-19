@@ -6,8 +6,12 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "base-server": "node --watch basic-server.js"
+    "base-server": "node --watch basic-server.js",
+    "express-server": "node --watch express-server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
