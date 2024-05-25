@@ -1,10 +1,17 @@
 import express from "express";
 
-import teacherRouter from "./routes/teachers.js";
-import studentRouter from "./routes/students.js";
+// import teacherRouter from "./routes/teachers.js";
+import teacherRouter from "./routes/teachersRouter.js";
+// import studentRouter from "./routes/students.js";
+import studentDBRouter from "./routes/studentsRouter.js";
 import todosRouter from "./routes/todos.js";
+import connectToDb from "./db-utils/mongo-connection.js";
+import mongooseConnect from "./db-utils/mongoose-connection.js";
 
 const server = express();
+
+await connectToDb();
+await mongooseConnect();
 
 server.use(express.json());
 
@@ -49,7 +56,7 @@ server.delete("/", (req, res) => {
 
 // Adding the Router for Teacher Endpoints/APIs
 server.use("/teachers", teacherRouter);
-server.use("/students", studentRouter);
+server.use("/students", studentDBRouter);
 server.use("/todos", todosRouter);
 
 const port = 8000;

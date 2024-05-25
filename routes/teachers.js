@@ -1,12 +1,31 @@
 import express from "express";
 
-import { teachers } from "./local-variable.js";
+import { students, teachers } from "./local-variable.js";
 
 const teacherRouter = express.Router();
 
 // /teachers get all the teachers
 teacherRouter.get("/", (req, res) => {
-  res.send(teachers);
+  const { studentId } = req.query;
+
+  if (studentId) {
+    const teachersData = teachers.filter((t) => t.students.includes(studentId));
+    res.send(teachersData);
+  } else {
+    res.send(teachers);
+  }
+});
+
+teacherRouter.get("/get-students/:teacherId", (req, res) => {
+  const { teacherId } = req.params;
+
+  const studentData = students.filter((stu) => stu.teacherId === teacherId);
+
+  if (teacherId) {
+    res.send({ students: studentData });
+  } else {
+    res.send(teachers);
+  }
 });
 
 teacherRouter.post("/", (req, res) => {

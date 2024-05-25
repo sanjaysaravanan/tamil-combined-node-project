@@ -1,11 +1,21 @@
+// Simple API with local memory
+
 import express from "express";
 
-import { students } from "./local-variable.js";
+import { students, teachers } from "./local-variable.js";
 
 const studentRouter = express.Router();
 
 // get all students
 studentRouter.get("/", (req, res) => {
+  const { teacherId } = req.query;
+
+  if (teacherId) {
+    res.send({
+      students: students.filter((stu) => stu.teacherId === teacherId),
+    });
+  }
+
   res.send({ students });
   // res.send(students);
 });
@@ -14,7 +24,7 @@ studentRouter.get("/", (req, res) => {
 studentRouter.post("/", (req, res) => {
   const { body } = req;
 
-  students.push({ id: Date.now().toString(), ...body });
+  students.push({ id: Date.now().toString(), teacherId: null, ...body });
 
   res.send({ msg: "Created student Successfully" });
 });
@@ -45,6 +55,34 @@ studentRouter.delete("/:studentId", (req, res) => {
     res.send({ msg: "Student Deleted successfully" });
   } else {
     res.status(404).send({ msg: "Student Not Found" });
+  }
+});
+
+// Assign a teacher to a student
+studentRouter.patch("/assign-teacher/:studentId", (req, res) => {
+  const { body } = req;
+
+  const { teacherId } = body;
+  const { studentId } = req.params;
+
+  const stuObj = students.find((student) => student.id === studentId);
+  const teacherObj = students.find((teacher) => teacher.id === teacherId);
+
+  if (stuObj && teacherObj) {
+    const index = students.findIndex((student) => student.id === studentId);
+    const teacherIndex = teachers.findIndex(
+      (teacher) => teacher.id === teacherId
+    );
+
+    students[index].teacherId = teacherId;
+    teachers[teacherIndex].students = [
+      ...teachers[teacherIndex].students,
+      studentId,
+    ];
+
+    res.send({ msg: "Teacher Assignment Success!" });
+  } else {
+    res.status(400).send({ msg: "Please check student and teacher ids" });
   }
 });
 
