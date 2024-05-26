@@ -1,12 +1,9 @@
 import mongoose from "mongoose";
 
-/* mongodb+srv://sanjaysaravanan1997:8JMtgqJdaf7R0WLm@cluster0.ruapl1v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 */
-
-const dbName = "tamil-combined";
-// const dbCluster = "127.0.0.1:27017";
-const dbCluster = "cluster0.ruapl1v.mongodb.net";
-const dbUserName = "sanjaysaravanan1997";
-const dbPassword = "8JMtgqJdaf7R0WLm";
+const dbCluster = process.env.DB_CLUSTER || "localhost:27017";
+const dbName = process.env.DB_NAME || "";
+const dbUserName = process.env.DB_USER || "";
+const dbPassword = process.env.DB_PASSWORD || "";
 
 const localUri = `mongodb://${dbCluster}/${dbName}`;
 

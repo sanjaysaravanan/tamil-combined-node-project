@@ -1,11 +1,14 @@
 import { MongoClient } from "mongodb";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 // Mongo Running URI
-// const dbCluster = "127.0.0.1:27017";
-const dbCluster = "cluster0.ruapl1v.mongodb.net";
-const dbName = "tamil-combined";
-const dbUserName = "sanjaysaravanan1997";
-const dbPassword = "8JMtgqJdaf7R0WLm";
+const dbCluster = process.env.DB_CLUSTER || "localhost:27017";
+const dbName = process.env.DB_NAME || "";
+const dbUserName = process.env.DB_USER || "";
+const dbPassword = process.env.DB_PASSWORD || "";
 
 const localUri = `mongodb://${dbCluster}/${dbName}`;
 
