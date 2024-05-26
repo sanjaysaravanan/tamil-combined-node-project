@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 // import teacherRouter from "./routes/teachers.js";
 import teacherRouter from "./routes/teachersRouter.js";
@@ -14,6 +15,7 @@ await connectToDb();
 await mongooseConnect();
 
 server.use(express.json());
+server.use(cors());
 
 server.post("/files", () => {
   // logic to create a file as per the question
