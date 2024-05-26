@@ -63,4 +63,32 @@ studentDBRouter.delete("/:studentId", async (req, res) => {
   }
 });
 
+studentDBRouter.patch("/assign-teacher/:studentId", async (req, res) => {
+  const { body } = req;
+
+  const { teacherId } = body;
+  const { studentId } = req.params;
+
+  // Check whether the student exists
+  const stuObj = await db.collection("students").findOne({ id: studentId });
+  const teachObj = await db.collection("teachers").findOne({ id: teacherId });
+  if (stuObj && teachObj) {
+    // Update the teacher in student collection
+    await db
+      .collection("students")
+      .updateOne({ id: studentId }, { $set: { teacherId } });
+
+    //  add student in teacher collection
+    await db
+      .collection("teachers")
+      .updateOne(
+        { id: teacherId },
+        { $set: { students: [...teachObj.students, studentId] } }
+      );
+    res.send({ msg: "Teacher Assigned Successfully" });
+  } else {
+    res.status(400).send({ msg: "Please check Student & Teacher Details" });
+  }
+});
+
 export default studentDBRouter;
