@@ -8,6 +8,8 @@ import studentDBRouter from "./routes/studentsRouter.js";
 import todosRouter from "./routes/todos.js";
 import connectToDb from "./db-utils/mongo-connection.js";
 import mongooseConnect from "./db-utils/mongoose-connection.js";
+import registerRouter from "./routes/auth/register.js";
+import loginRouter from "./routes/auth/login.js";
 
 const server = express();
 
@@ -60,6 +62,8 @@ server.delete("/", (req, res) => {
 server.use("/teachers", teacherRouter);
 server.use("/students", studentDBRouter);
 server.use("/todos", todosRouter);
+server.use("/register", registerRouter);
+server.use("/login", loginRouter);
 
 const port = 8000;
 
