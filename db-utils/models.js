@@ -43,8 +43,8 @@ const userSchema = new mongoose.Schema({
     type: "string",
     required: true,
   },
-  roles: {
-    type: "array",
+  role: {
+    type: "string",
     required: true,
   },
 });

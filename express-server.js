@@ -58,8 +58,24 @@ server.delete("/", (req, res) => {
   res.send({ message: "Delete Method Called" });
 });
 
+const customMiddleware = (req, res, next) => {
+  console.log(
+    new Date().toString(),
+    "Handling request for",
+    req.method,
+    req.originalUrl
+  );
+
+  next();
+};
+
+// usage for all apis
+server.use(customMiddleware);
+
 // Adding the Router for Teacher Endpoints/APIs
 server.use("/teachers", teacherRouter);
+// usage for a particular router
+// server.use("/teachers", customMiddleware, teacherRouter);
 server.use("/students", studentDBRouter);
 server.use("/todos", todosRouter);
 server.use("/register", registerRouter);
