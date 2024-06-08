@@ -11,6 +11,7 @@ import connectToDb from "./db-utils/mongo-connection.js";
 import mongooseConnect from "./db-utils/mongoose-connection.js";
 import registerRouter from "./routes/auth/register.js";
 import loginRouter from "./routes/auth/login.js";
+import verifyUserRouter from "./routes/auth/verifyUser.js";
 
 const server = express();
 
@@ -91,12 +92,25 @@ const authApi = (req, res, next) => {
   }
 };
 
+const authAllApi = (req, res, next) => {
+  try {
+    const token = req.headers["authorization"];
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (err) {
+    console.log(err.message);
+    // err
+    res.status(403).send({ msg: "Unauthorized" });
+  }
+};
+
 // Adding the Router for Teacher Endpoints/APIs
 server.use("/teachers", authApi, teacherRouter);
 // usage for a particular router
 // server.use("/teachers", customMiddleware, teacherRouter);
-server.use("/students", studentDBRouter);
-server.use("/todos", todosRouter);
+server.use("/students", authAllApi, studentDBRouter);
+server.use("/verify-user", verifyUserRouter);
+server.use("/todos", authAllApi, todosRouter);
 server.use("/register", registerRouter);
 server.use("/login", loginRouter);
 

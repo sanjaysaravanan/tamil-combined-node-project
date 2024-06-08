@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { userModel } from "../../db-utils/models.js";
 import { transporter, mailOptions } from "../mail-utils.js";
 
@@ -25,14 +26,23 @@ registerRouter.post("/", async (req, res) => {
           ...userData,
           password: hash,
           id,
+          isVerified: false,
         });
+
+        var token = jwt.sign(
+          { name: userData.name, email: userData.email },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "15m",
+          }
+        );
 
         await newUser.save(); // validates and inserts the record
         await transporter.sendMail({
           ...mailOptions,
           to: userData.email, // "to" from mail options will be overriden
           subject: "Welcome to the Application, Verify Account",
-          text: "To Continue, Please verify your email address",
+          text: `To Continue, Please verify your email address ${process.env.FE_URL}/verify-account?token=${token}`,
         });
         res.send({ msg: "User saved successfully" });
       }
