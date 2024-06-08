@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { userModel } from "../../db-utils/models.js";
+import { transporter, mailOptions } from "../mail-utils.js";
 
 const registerRouter = express.Router();
 
@@ -27,7 +28,12 @@ registerRouter.post("/", async (req, res) => {
         });
 
         await newUser.save(); // validates and inserts the record
-
+        await transporter.sendMail({
+          ...mailOptions,
+          to: userData.email, // "to" from mail options will be overriden
+          subject: "Welcome to the Application, Verify Account",
+          text: "To Continue, Please verify your email address",
+        });
         res.send({ msg: "User saved successfully" });
       }
     });

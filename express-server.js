@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 // import teacherRouter from "./routes/teachers.js";
 import teacherRouter from "./routes/teachersRouter.js";
@@ -72,8 +73,26 @@ const customMiddleware = (req, res, next) => {
 // usage for all apis
 server.use(customMiddleware);
 
+// middleware to authorize the apis
+const authApi = (req, res, next) => {
+  try {
+    const token = req.headers["authorization"];
+    const data = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (data.role === "Teacher") {
+      next();
+    } else {
+      throw new Error();
+    }
+  } catch (err) {
+    console.log(err.message);
+    // err
+    res.status(403).send({ msg: "Unauthorized" });
+  }
+};
+
 // Adding the Router for Teacher Endpoints/APIs
-server.use("/teachers", teacherRouter);
+server.use("/teachers", authApi, teacherRouter);
 // usage for a particular router
 // server.use("/teachers", customMiddleware, teacherRouter);
 server.use("/students", studentDBRouter);

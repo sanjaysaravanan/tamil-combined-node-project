@@ -35,7 +35,7 @@ loginRouter.post("/", async (req, res) => {
 
             console.log(typeof user);
 
-            var token = jwt.sign(user, "shhhhh", {
+            var token = jwt.sign(user, process.env.JWT_SECRET, {
               expiresIn: "1day",
             });
 
